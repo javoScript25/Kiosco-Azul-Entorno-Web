@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Solicitud recibida
+{% endblock %}
+
+{% block content %}
+
+<section class="form-contenedor panel">
+<p class="antetitulo">Próximo paso</p>
+<h1>Tu solicitud fue recibida.</h1>
+<p>La cuenta queda pendiente de aprobación. Avisale al administrador de tu organización para que revise la solicitud.</p>
+<p>No necesitás volver a registrarte. Podrás ingresar cuando tu cuenta esté habilitada.</p>
+<a class="boton" href="{% url 'cuentas:login' %}">Volver al ingreso</a>
+</section>
+{% endblock %}

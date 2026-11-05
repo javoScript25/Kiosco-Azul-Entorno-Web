@@ -1,0 +1,98 @@
+Instalar para el cliente
+
+El servidor ejecuta Django y PostgreSQL. Los clientes acceden por HTTPS desde un
+navegador, sin instalar Docker. Esta guía se aplica al sistema base; cada grupo debe
+validar sus procesos, permisos y capacidad antes de incorporar datos reales.
+
+Elegir el servidor
+
+Puede ser una computadora dedicada en la organización o una máquina en la nube.
+Recomendamos Ubuntu 24.04 LTS con Docker Engine y Compose. Como punto de partida
+para una instalación pequeña: 2 núcleos, 4 GB de RAM y SSD con 20 GB libres más
+espacio para datos y respaldos. Es una estimación, no una capacidad certificada:
+probar usuarios simultáneos y el volumen real de trabajo antes de entregar.
+
+La computadora debe permanecer encendida, tener dirección estable y recibir
+actualizaciones. Para un servidor local, considerar respaldo eléctrico. Las PCs
+cliente requieren un navegador actualizado y conectividad con ese servidor.
+
+Dos configuraciones separadas
+
+- compose.yaml: desarrollo, editor conectado al código, recarga automática,
+  acceso solo desde localhost y migraciones iniciales automáticas.
+- compose.servidor.yaml: Gunicorn, proxy Caddy con HTTPS, código dentro de la
+  imagen, DEBUG=False, reinicio automático y migraciones ejecutadas por separado.
+
+No se combinan ambos archivos. No publicar el servidor de desarrollo en Internet.
+En servidor solo se exponen 80 y 443; PostgreSQL y Gunicorn quedan en la red Docker.
+Revisar reglas de red del proveedor y del equipo: Docker puede interactuar con el
+firewall de forma distinta a los servicios instalados directamente.
+
+Instalación nueva
+
+1. Copiar el código en una carpeta nueva del servidor. Usar su commit o ZIP verificado.
+2. Instalar Docker siguiendo la guía oficial y generar .env como en Ubuntu.
+3. Editar .env: elegir COMPOSE_PROJECT_NAME=pp2_cliente, mantener claves nuevas,
+   agregar APP_DOMAIN=sistema.ejemplo.com (reemplazar por el dominio real), y
+   establecer DJANGO_DEBUG=False. No escribir https:// en APP_DOMAIN.
+4. Elegir una de las alternativas HTTPS de abajo antes de iniciar el proxy.
+5. Construir e iniciar únicamente la base:
+
+
+docker compose -f compose.servidor.yaml build
+docker compose -f compose.servidor.yaml up -d db
+docker compose -f compose.servidor.yaml run --rm web python manage.py migrate --noinput
+docker compose -f compose.servidor.yaml run --rm web python manage.py createsuperuser
+docker compose -f compose.servidor.yaml run --rm web python manage.py check --deploy --fail-level WARNING
+docker compose -f compose.servidor.yaml up -d
+
+
+Las migraciones de esta instalación crean una base nueva. Si ya existe información,
+no ejecutar este procedimiento como si fuera una instalación vacía: respaldar,
+restaurar en una copia y revisar las migraciones antes de intervenir.
+
+Dominio público
+
+Apuntar el DNS del dominio a la IP del servidor y permitir 80/443 según la política
+de red. Caddy obtiene el certificado automáticamente si se cumplen los requisitos
+del dominio y conectividad. No se configuró ni publicó un dominio real al construir
+la plantilla; cada despliegue necesita comprobarlo con su propia infraestructura.
+
+Red local
+
+Elegir un nombre estable, por ejemplo sistema.interno, y resolverlo por DNS local
+en todas las PCs. Copiar el contenido de infra/Caddyfile.local como
+infra/Caddyfile antes del inicio. Caddy genera una autoridad certificadora local.
+Exportar su certificado público (nunca su clave privada):
+
+
+docker compose -f compose.servidor.yaml cp proxy:/data/caddy/pki/authorities/local/root.crt ./pp2-ca-publica.crt
+
+
+El responsable del equipo debe instalar y confiar en ese certificado público en
+cada dispositivo autorizado según su sistema operativo/navegador. Esta operación
+requiere su aprobación. No enseñar a saltar advertencias del navegador. No borrar
+el volumen de certificados: su pérdida exige planificar una nueva confianza.
+
+Verificación del cliente
+
+Abrir https://DOMINIO/salud/: debe responder {"estado":"ok"}.
+Comprobar login, registro pendiente, aprobación, CRUD, cierre de sesión y permisos.
+Verificar que HTTP redirige a HTTPS y que el navegador confía en el certificado.
+En este modo se utilizan cookies seguras y la clave propia del servidor.
+
+No distribuir credenciales de superusuario. No mostrar claves, datos personales
+ni logs completos en capturas de clase. No modificar SECURE_PROXY_SSL_HEADER
+ni abrir el puerto de Gunicorn sin revisar la frontera de confianza del proxy.
+
+Actualizaciones y recuperación
+
+Registrar versión actual, generar respaldo y verificar restauración aislada antes
+de una actualización. Probar la nueva imagen y migraciones contra esa copia.
+Planificar la ventana de mantenimiento, conservar la imagen anterior y el respaldo.
+No retroceder únicamente el código si cambió el esquema: validar compatibilidad o
+restaurar el conjunto en un destino nuevo. No ejecutar down -v ni borrar bases.
+
+En un servidor con datos reales, los backups automáticos, su cifrado, conservación
+externa y monitoreo deben ser configurados por el responsable. Los volúmenes Docker
+son persistencia, no un respaldo. Consultar ENTREGA_COMPLETA.txt (ENTREGA_COMPLETA.txt).

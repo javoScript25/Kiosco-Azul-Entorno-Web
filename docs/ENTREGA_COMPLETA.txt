@@ -1,0 +1,99 @@
+Entrega completa y recuperación
+
+Código y configuración
+
+Entregar el ZIP de código o el repositorio del grupo en un commit identificado.
+El paquete de alumnos excluye .env, bases, respaldos, cuentas y archivos privados.
+Su manifiesto ENTREGA_COMPLETA.json identifica versión, plataforma, tamaños y SHA-256.
+La configuración se genera de nuevo en cada equipo; las claves SSH son propias.
+Las imágenes de Python, PostgreSQL y Caddy están fijadas por digest en los archivos.
+
+Para consultar el código no hay que restaurar datos del docente. Para trasladar un
+sistema del cliente sí hay que conservar su base y configuración privada.
+
+Respaldo de PostgreSQL
+
+Usar el archivo Compose del entorno correcto. Los siguientes comandos son para
+servidor y los nombres por defecto pp2. Si se cambiaron, ajustarlos primero.
+El dump se genera dentro del contenedor para no corromper su formato binario con
+las redirecciones de versiones antiguas de PowerShell. Reemplazar FECHA por una
+identificación única; no sobrescribir respaldos anteriores.
+
+
+mkdir backups
+docker compose -f compose.servidor.yaml exec db pg_dump -U pp2 -d pp2 -Fc -f /tmp/pp2-FECHA.dump
+docker compose -f compose.servidor.yaml cp db:/tmp/pp2-FECHA.dump backups/pp2-FECHA.dump
+
+
+mkdir solo es necesario si la carpeta no existe. Comprobar el archivo y su SHA-256
+con sha256sum en Linux o Get-FileHash -Algorithm SHA256 en PowerShell.
+No basta con que el archivo exista: hay que comprobar una restauración.
+
+Restauración en un destino nuevo
+
+Preparar una segunda carpeta/servidor con el mismo código, su .env y un nombre
+Compose distinto (por ejemplo pp2_recepcion). Nunca conectar el ensayo al volumen
+del cliente. Iniciar solamente db en ese destino, copiar el dump y crear una base
+nueva con nombre pp2_restaurada. createdb fallará si ya existe: no continuar ni
+borrarla; elegir otro destino nuevo.
+
+
+docker compose -f compose.servidor.yaml up -d db
+docker compose -f compose.servidor.yaml cp backups/pp2-FECHA.dump db:/tmp/restaurar.dump
+docker compose -f compose.servidor.yaml exec db createdb -U pp2 pp2_restaurada
+docker compose -f compose.servidor.yaml exec db pg_restore -U pp2 --exit-on-error --single-transaction --no-owner --no-privileges -d pp2_restaurada /tmp/restaurar.dump
+
+
+En la copia receptora, apuntar POSTGRES_DB=pp2_restaurada, reiniciar/recrear los
+servicios y comprobar usuarios, categorías, productos y migraciones. Comparar
+conteos y huellas de exportaciones ordenadas con el origen y verificar el circuito
+funcional. Conservar el origen hasta aceptar formalmente el resultado. No usar
+--clean ni restaurar sobre una base con información previa.
+
+Paquete privado del cliente
+
+El código público para alumnos no sustituye este paquete. Crear por separado un
+archivo cifrado con herramienta acordada (por ejemplo age o 7-Zip con AES-256),
+con contraseña o clave por otro canal. No incluir claves SSH del equipo.
+
+Debe contener el dump verificado, configuración privada necesaria y archivos
+persistentes agregados por el grupo. Si se conserva la autoridad HTTPS interna,
+su clave es material secreto que requiere especial protección. Alternativamente,
+planificar una autoridad nueva y su instalación en los clientes. La plantilla base
+no maneja archivos subidos por usuarios; si se agregan, incluir también su volumen.
+
+El manifiesto del paquete privado debe tener: versión de esquema, commit exacto,
+rama, fecha, plataforma, artefactos, tamaños, SHA-256, versiones de contenedores,
+origen y fecha del respaldo, y comandos de verificación. No escribir secretos en
+el manifiesto. En esta entrega no existe un cliente real ni se generó un paquete
+privado con datos reales.
+
+Condiciones de aceptación
+
+- Destino nuevo y código en la versión indicada.
+- Todas las huellas coinciden y la restauración termina sin errores.
+- Coinciden conteos y comprobaciones de contenido.
+- Se puede iniciar sesión y ejecutar el proceso central.
+- Se probó reinicio sin pérdida de datos y existe un respaldo externo recuperable.
+- El responsable conoce las credenciales y el procedimiento de recuperación.
+
+Generar y comprobar el ZIP docente
+
+Después de confirmar y verificar cambios en Git, ejecutar con Python 3.12:
+
+
+python scripts/empaquetar.py
+
+
+El resultado aparece en dist/plantilla-pp2-COMMIT.zip. El ZIP contiene únicamente
+la plantilla confirmada; no los otros materiales del repositorio docente.
+El nombre se basa en el commit y no se sobrescribe un ZIP existente.
+Extraerlo en una carpeta nueva y ejecutar python scripts/verificar_entrega.py.
+Si no hay Python instalado, se puede usar la imagen Python fijada con el mismo
+montaje de carpeta que usa el instructivo de instalación, sustituyendo el script
+configurar.py por verificar_entrega.py. No requiere instalar paquetes.
+Comprobar antes de personalizar: los cambios del alumno alteran las huellas.
+
+Para generar la edición de alumnos, usar python scripts/empaquetar.py --alumnos.
+Se omiten README.md y AGENTS.md tanto del ZIP como del manifiesto; se conservan
+las guías de docs. El nombre del ZIP termina en -alumnos.zip.

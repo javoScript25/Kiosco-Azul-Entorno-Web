@@ -1,0 +1,48 @@
+Verificación de la primera versión · 26/10/2026
+
+Entorno utilizado
+
+Linux x86-64, Docker Engine 29.9.2 y Compose 5.6.1. Contenedores con Python 3.12.15,
+Django 5.2.18, PostgreSQL 17.11, Gunicorn 26.2.0 y Caddy 2.11.7.
+Dependencias fijadas en requirements.txt e imágenes por digest.
+
+Resultado
+
+- Construcción Docker completa y migraciones sobre volúmenes nuevos.
+- 26 pruebas automatizadas aprobadas con PostgreSQL: cuentas pendientes, aprobación,
+  rechazo, privilegios, CSRF, contraseñas protegidas, bloqueo, CRUD, validaciones,
+  búsquedas, paginación, ejemplos idempotentes y categoría referenciada protegida.
+- Bloqueo de acceso confirmado aunque cambien IP y navegador. Se silencia solamente
+  axes.W006: esta advertencia exige incluir IP, pero aquí el límite es por cuenta
+  para no bloquear a toda una clase que comparte conexión. No hay límite global
+  contra ataques distribuidos; revisarlo al publicar un sistema en Internet.
+- check y makemigrations --check --dry-run sin cambios pendientes.
+- check --deploy --fail-level WARNING satisfactorio con DEBUG=False.
+- Revisión de acceso, inicio, catálogo y formulario con navegador; escritorio de
+  1366 px y pantalla de 390 px. Alta de producto ficticio desde la interfaz.
+- Servidor aislado con Gunicorn, estáticos y HTTPS de Caddy: certificado validado
+  usando su CA pública de ensayo, sin desactivar verificación TLS; HTTP redirige.
+- Respaldo pg_dump y restauración transaccional en otra base y otro volumen:
+  1 usuario ficticio, 2 categorías, 4 productos y 31 migraciones coincidentes.
+  Coincidió SHA-256 de exportaciones ordenadas de esas cuatro tablas.
+- Tras reiniciar PostgreSQL, acceso HTTPS, login, catálogo y CSS correctos contra
+  la base restaurada.
+
+Los comandos de instalación y uso están en las guías de docs.
+Para repetir las pruebas en desarrollo: docker compose exec web python manage.py test --noinput. Las pruebas
+no certifican ausencia absoluta de errores ni capacidad para cualquier cliente.
+
+Entrega reproducible
+
+El ZIP se extrajo en otra carpeta: 75 archivos verificados por SHA-256, configuración
+generada sin sobrescribirla al repetir, construcción Docker y migraciones sobre un
+volumen nuevo. Salud y comprobación de Django correctas, sin cuentas ni productos
+precargados. También se comprobó regenerar el ZIP desde un repositorio independiente.
+
+Límites y siguiente validación
+
+No se ejecutó Docker Desktop nativamente en Windows. Se requiere una prueba piloto
+con Windows/WSL antes de distribuir a toda la comisión. No se desplegó un dominio
+público ni se usaron datos reales. No se realizó una prueba de carga o auditoría de
+seguridad independiente. La configuración de backups externos del cliente y el
+correo real quedan fuera de esta primera plantilla.

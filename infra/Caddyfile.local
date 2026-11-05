@@ -1,0 +1,7 @@
+# Para un servidor de red local: copiar como infra/Caddyfile antes de iniciar.
+# Cada cliente debe confiar en la CA interna que genera Caddy.
+{$APP_DOMAIN} {
+    tls internal
+    encode zstd gzip
+    reverse_proxy web:8000
+}

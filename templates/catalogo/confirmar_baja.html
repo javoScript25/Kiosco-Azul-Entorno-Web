@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Confirmar cambio de estado
+{% endblock %}
+
+{% block content %}
+<section class="form-contenedor panel">
+<p class="antetitulo">Confirmación necesaria</p>
+{% if tipo == 'producto' %}
+<h1>{% if object.activo %}Dar de baja{% else %}Reactivar{% endif %} {{ object }}</h1>
+<p>{% if object.activo %}El producto deja de aparecer para vender, pero no se borra: sigue en las ventas, recepciones y movimientos ya registrados.{% else %}El producto vuelve a estar disponible para vender.{% endif %}</p>
+{% else %}
+<h1>{% if object.activa %}Desactivar{% else %}Reactivar{% endif %} la categoría {{ object }}</h1>
+<p>{% if object.activa %}No se puede desactivar una categoría que tiene productos activos.{% else %}La categoría vuelve a estar disponible para los productos.{% endif %}</p>
+{% endif %}
+{% if errores %}
+<div class="error" role="alert">{% for e in errores %}<p>{{ e }}</p>{% endfor %}</div>
+{% endif %}
+<form method="post">{% csrf_token %}<div class="acciones">
+<button class="peligro" type="submit">Confirmar</button>
+<a href="{% if tipo == 'producto' %}{{ object.get_absolute_url }}{% else %}{% url 'catalogo:categorias' %}{% endif %}">Cancelar y volver</a>
+</div>
+</form>
+</section>
+{% endblock %}

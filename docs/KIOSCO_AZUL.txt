@@ -1,0 +1,61 @@
+Kiosco Azul sobre la plantilla base de la cátedra
+Práctica Profesional II · Arias, López, Naranjo · noviembre de 2026
+
+Qué viene de la plantilla (Prof. Lic. Adrián Aguirre, plantilla-pp2 a45d1428)
+
+- Docker, Compose, Dockerfile, configuración (.env), versiones fijadas.
+- Registro de cuentas con aprobación, inicio y cierre de sesión, bloqueo tras
+  cinco intentos (django-axes), estilos base y componentes de formulario.
+- Estructura de apps (cuentas, catalogo, inicio) y forma de trabajo:
+  ruta → vista → formulario → modelo → PostgreSQL.
+
+Qué desarrollamos nosotros (Sprint 3)
+
+- Las 14 tablas del DER de alto refinamiento como modelos de Django, con sus
+  claves, CHECK y listas cerradas en PostgreSQL:
+    cuentas     Usuario (con rol ADMINISTRADOR / OPERADOR)
+    catalogo    Categoria, Producto, Historial_Precio
+    ventas      Medio_Pago, Venta, Detalle_Venta, Pago
+    caja        Apertura_Caja, Movimiento_Caja, Arqueo_Caja
+    inventario  Recepcion_Mercaderia, Detalle_Recepcion, Movimiento_Stock
+- HU-01: inicio de sesión con menú según el rol.
+- HU-02: administración de usuarios y roles (Usuarios). No se puede dejar el
+  sistema sin un ADMINISTRADOR activo.
+- HU-03 / HU-04 / HU-05 / HU-14 / HU-16 (adelantadas): categorías y productos con
+  baja lógica, precio de venta mayor al costo, unidad (UNIDAD o KG), preventista,
+  búsqueda, alerta de stock mínimo e historial de precios.
+- Reglas de negocio de los procesos 2.0, 3.0 y 4.0 como servicios probados
+  (ventas/services.py, caja/services.py, inventario/services.py): venta con
+  pagos y stock en una sola transacción, una sola caja abierta, efectivo esperado
+  del arqueo, recepción y ajustes con Movimiento_Stock. Sus pantallas van en los
+  sprints 4 a 6.
+- "Tablas del sistema" (/admin/): consulta de solo lectura de las 14 tablas.
+- Datos de prueba ficticios en las 14 tablas (comando cargar_demo).
+- 46 pruebas automáticas (caso correcto y caso de error de cada historia).
+
+Correspondencia con el diccionario de datos
+
+- Las tablas se llaman como en el DER (producto, venta, apertura_caja, ...), salvo
+  Usuario, que Django guarda en cuentas_usuario.
+- Usuario: id_usuario = id, nombre = first_name + last_name,
+  nombre_usuario = username, password_hash = password (lo cifra Django),
+  activo = is_active. Se agregan estado (aprobación) y correo de la plantilla.
+- Las claves primarias y foráneas usan los nombres del DER (id_producto,
+  id_categoria, id_venta, id_apertura_caja, ...).
+- Producto conserva además creado_por, actualizado_por, creado y actualizado
+  (auditoría, RNF-04).
+
+Instalar o actualizar (dentro de la carpeta plantilla-pp2)
+
+  docker compose exec web python manage.py migrate
+  docker compose exec web python manage.py test --noinput
+  docker compose exec web python manage.py cargar_demo --usuario TU_USUARIO --con-empleada
+
+--con-empleada crea el usuario OPERADOR "empleada" y muestra su contraseña una
+sola vez. Para el nombre en pantalla: SITE_NAME=Kiosco Azul en el .env y luego
+docker compose up -d --force-recreate web
+
+Nota sobre los datos cargados con la plantilla: la migración los conserva. Los
+productos quedan con costo 0, por unidad y activos; si alguno tenía precio 0
+queda en 0,01 para que la Dueña lo corrija. Las descripciones de más de 250
+caracteres se recortan.

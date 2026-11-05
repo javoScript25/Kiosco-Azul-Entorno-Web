@@ -1,0 +1,107 @@
+Del ejemplo al sistema de tu organización
+
+Primero hacé funcionar la plantilla sin cambios. Después modificá una cosa por vez
+y comprobá el resultado. No renombres todas las carpetas de golpe.
+
+Dónde cambiar cada cosa
+
+
+Necesidad: Nombre de la organización
+Archivo o lugar: SITE_NAME en .env; recrear servicio web
+
+Necesidad: Colores, espaciado y tipografía
+Archivo o lugar: Variables al inicio de static/css/estilos.css
+
+Necesidad: Marca y navegación compartidas
+Archivo o lugar: templates/base.html
+
+Necesidad: Datos y relaciones
+Archivo o lugar: catalogo/models.py
+
+Necesidad: Campos editables y validaciones
+Archivo o lugar: catalogo/forms.py
+
+Necesidad: Consultas, permisos y operaciones
+Archivo o lugar: catalogo/views.py
+
+Necesidad: Direcciones de las pantallas
+Archivo o lugar: catalogo/urls.py
+
+Necesidad: Presentación de cada pantalla
+Archivo o lugar: templates/catalogo/
+
+Necesidad: Registro y aprobación
+Archivo o lugar: cuentas/
+
+Necesidad: Pruebas de comportamiento
+Archivo o lugar: cuentas/tests.py y catalogo/tests.py
+
+El recorrido de un alta es: ruta → vista → formulario → modelo → PostgreSQL.
+La vista vuelve a mostrar errores si el formulario no es válido. Un dato válido
+se guarda con el usuario que lo creó; ese identificador no se acepta del navegador.
+
+Ejemplo guiado: agregar marca al producto
+
+1. En Producto, agregá marca = models.CharField(max_length=80, blank=True).
+2. Agregá "marca" a fields de ProductoForm.
+3. Agregá {{ object.marca|default:"Sin marca" }} a la pantalla de detalle.
+4. Generá y aplicá la migración en tu base de desarrollo:
+
+
+docker compose exec web python manage.py makemigrations catalogo
+docker compose exec web python manage.py migrate
+docker compose exec web python manage.py test --noinput
+
+
+5. Probá un producto sin marca y uno con marca. Agregá una prueba que compruebe
+   que el campo se guarda y se muestra. Guardá el cambio y la migración en Git.
+
+makemigrations crea la receta del cambio; migrate modifica la base.
+En una base del cliente, revisar impacto y respaldo antes de aplicar migraciones.
+Agregar un campo obligatorio a registros existentes necesita una decisión de negocio;
+no inventes valores para completar información real.
+
+Agregar tu proceso central
+
+Ejemplo: una organización registra pedidos. Primero escribí sus historias de usuario,
+criterios de aceptación y reglas. Definí Pedido y DetallePedido en el DER. Después
+creá una app pedidos, registrala en settings y agregá sus rutas.
+
+
+docker compose exec web python manage.py startapp pedidos
+
+
+Implementá modelos, formularios, vistas, pantallas y pruebas siguiendo el recorrido
+anterior. Reutilizá base.html y el componente de formularios. No copies el login.
+No calcules stock o totales únicamente en JavaScript: deben validarse en el servidor.
+Las operaciones de varios registros que deben completarse juntas usan transacciones.
+
+Reglas prácticas del código
+
+- Una función tiene una responsabilidad. Los nombres describen lo que hace.
+- Modelos guardan estructura y restricciones; formularios validan entradas; vistas
+  coordinan solicitudes y comprueban permisos; plantillas presentan información.
+- No confiar en botones ocultos como medida de seguridad: los permisos se controlan
+  en el servidor tanto en GET como en POST.
+- No agregar campos como is_superuser o is_active al formulario público.
+- No desactivar CSRF ni usar |safe para contenido escrito por usuarios.
+- resolver_solicitud es un servicio pequeño porque cambia estado y registra una
+  decisión en una sola transacción; no se agregan capas para operaciones triviales.
+- Las contraseñas las procesa Django. Las credenciales de infraestructura van en .env.
+- Evitar dependencias nuevas cuando Django ya resuelve la necesidad.
+- El catálogo comparte datos entre operadores de una organización. Si el proyecto
+  requiere datos privados por persona o sucursal, diseñar filtros y pruebas específicos.
+
+Trabajo en equipo
+
+Creá un repositorio propio con solo esta plantilla, no con toda la carpeta docente.
+Subí código, migraciones, pruebas y documentación. No subas .env, bases ni respaldos.
+Cada integrante trabaja en su rama y relaciona sus cambios con historias de usuario.
+Antes de integrar: revisar diferencias, ejecutar pruebas y demostrar el recorrido.
+
+Versiones
+
+requirements.in enumera dependencias directas; requirements.txt fija también
+las transitivas verificadas. Las imágenes de contenedor tienen huellas inmutables.
+No reemplazarlas por latest. Para actualizar, hacerlo en una copia de desarrollo,
+regenerar el archivo de versiones y repetir las pruebas y la instalación desde cero.

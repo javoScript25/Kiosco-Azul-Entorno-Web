@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Solicitar acceso
+{% endblock %}
+
+{% block content %}
+
+<div class="form-contenedor">
+<a class="volver" href="{% url 'cuentas:login' %}">← Volver al ingreso</a>
+<p class="antetitulo">Nueva cuenta</p>
+<h1>Solicitar acceso</h1>
+<p>Completá tus datos. El administrador deberá aprobar tu cuenta antes de que puedas ingresar.</p>
+<form method="post" class="panel">{% csrf_token %}{% include 'componentes/formulario.html' %}<button type="submit">Enviar solicitud</button>
+</form>
+</div>
+{% endblock %}

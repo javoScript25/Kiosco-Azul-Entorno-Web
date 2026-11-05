@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Categoría
+{% endblock %}
+
+{% block content %}
+<div class="form-contenedor">
+<a class="volver" href="{% url 'catalogo:categorias' %}">← Volver a categorías</a>
+<h1>{% if object %}Editar{% else %}Agregar{% endif %} categoría</h1>
+<form method="post" class="panel">{% csrf_token %}{% include 'componentes/formulario.html' %}<button type="submit">Guardar categoría</button>
+</form>
+</div>
+{% endblock %}

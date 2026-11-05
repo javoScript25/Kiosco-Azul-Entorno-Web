@@ -1,0 +1,37 @@
+Estado · 26 de octubre de 2026
+
+Implementada la primera versión: registro pendiente, aprobación/rechazo con
+registro administrativo, login/logout, inicio y CRUD de categorías/productos.
+Roles simples: administrador y operador aprobado. Módulos cuentas, inicio y catálogo.
+
+Incluye configuración local automática, migraciones, ejemplos ficticios opcionales,
+versiones fijadas, desarrollo Docker y servidor Gunicorn/Caddy/PostgreSQL.
+Documentación Windows, Ubuntu, adaptación, despliegue, entrega y recuperación.
+
+Comprobado: 26 pruebas, migraciones iniciales, ausencia de cambios de esquema,
+revisión visual escritorio/celular, HTTPS local validado, respaldo/restauración
+con conteos y huellas coincidentes. Detalles en VERIFICACION.txt.
+
+Pendiente de cada implementación real: prueba piloto en Windows/WSL, dominio o DNS
+local, permisos del cliente, procesos propios, carga esperada y respaldo externo
+cifrado. Correo para recuperar contraseña es una ampliación opcional.
+
+El empaquetador contempla que la plantilla esté dentro de un repositorio docente
+o sea la raíz del repositorio propio de un grupo. No incluye carpetas vecinas.
+
+Entrega comprobada extrayendo el ZIP en una carpeta nueva, verificando sus huellas
+y ejecutando la instalación sobre un volumen vacío, sin cuentas predefinidas.
+
+Actualización de formato: ocho guías convertidas a texto plano; tablas adaptadas
+a listas, enlaces visibles y comandos conservados. Originales Markdown íntegros
+fuera de la plantilla. Código y configuración de ejecución sin modificaciones.
+Verificación del cambio: originales idénticos, comandos y referencias comprobados;
+check, migraciones sin cambios y 26 pruebas satisfactorias.
+
+Aclaración de requisitos: el equipo de desarrollo o servidor ejecuta Docker y
+los contenedores de Python/Django/PostgreSQL; los clientes solo usan el navegador.
+Texto actualizado en README y en Inicio de la guía HTML externa.
+
+Entrega para alumnos: scripts/empaquetar.py --alumnos excluye README.md y
+AGENTS.md del ZIP y del manifiesto. Los originales permanecen en el proyecto.
+Los instructivos TXT y el verificador de integridad se incluyen en la entrega.

@@ -1,0 +1,120 @@
+Instalación en Windows
+
+Al terminar podrás abrir el sistema en tu navegador y modificar el código desde
+Visual Studio Code. Esta guía usa PowerShell y contenedores Linux.
+
+1. Comprobar el equipo
+
+Recomendamos Windows 11 de 64 bits con soporte vigente, 8 GB de RAM como mínimo
+para Docker Desktop y 16 GB para trabajar con comodidad junto con editor y Zoom.
+Reservá unos 20 GB libres, preferentemente en SSD. Son referencias iniciales:
+el consumo final depende del sistema que desarrolle el grupo.
+
+Docker necesita virtualización habilitada en BIOS/UEFI y WSL 2. Comprobá los
+requisitos oficiales (https://docs.docker.com/desktop/setup/install/windows-install/)
+para tu edición y versión. No se garantiza compatibilidad con Windows antiguos.
+
+2. Instalar las herramientas
+
+1. Descargá Docker Desktop del enlace oficial anterior.
+2. Seguí la instalación con WSL 2. Si Windows solicita habilitar WSL o reiniciar,
+   completá ese paso antes de continuar. La configuración del sistema puede
+   requerir permisos de administrador; pedí ayuda si es una computadora institucional.
+3. Abrí Docker Desktop y esperá a que el motor esté iniciado.
+4. Instalá Visual Studio Code (https://code.visualstudio.com/) para editar.
+5. Instalá Git (https://git-scm.com/downloads/win) si vas a trabajar con repositorio.
+
+En PowerShell verificá:
+
+
+docker version
+docker compose version
+wsl --version
+
+
+docker version debe mostrar Client y Server. Si falta Server, abrí Docker Desktop.
+No hace falta instalar Python ni PostgreSQL en Windows.
+
+3. Abrir y configurar el proyecto
+
+Extraé el ZIP en una carpeta propia, por ejemplo C:\Proyectos\plantilla-pp2.
+No lo ejecutes dentro del ZIP. Evitá carpetas sincronizadas con OneDrive.
+Abrí esa carpeta en VS Code y una terminal PowerShell. Confirmá que estás en la
+carpeta correcta con Get-ChildItem: debe aparecer compose.yaml.
+
+
+docker run --rm --mount "type=bind,source=$($PWD.Path),target=/workspace" -w /workspace python:3.12-slim-bookworm@sha256:6a0e06f5ba0b373d051aabd3fffb9b873f27f9a2a3a14bcbe37dee6f0e3bbc70 python scripts/configurar.py
+
+
+Resultado esperado: «Configuración creada». Si ya existe .env, se conserva.
+El comando descarga Python dentro de un contenedor y genera tus claves locales.
+No muestra ni transmite esas claves. No compartas .env.
+
+4. Iniciar
+
+
+docker compose up --build -d
+docker compose logs -f web
+
+
+La primera vez descarga dependencias y crea las tablas de PostgreSQL. Esperá a ver
+Starting development server at http://0.0.0.0:8000/. Salí de la lectura de logs
+con Ctrl+C: esto no apaga el sistema.
+
+Abrí http://localhost:8000. Debe aparecer «Iniciar sesión».
+No uses 0.0.0.0 como dirección del navegador.
+
+5. Crear al administrador
+
+
+docker compose exec web python manage.py createsuperuser
+
+
+Elegí un nombre de usuario en minúsculas, un correo y una contraseña propia.
+Al escribir la contraseña no se ven caracteres: es normal. No omitas los avisos
+sobre contraseñas débiles. El primer administrador ya queda aprobado.
+
+Continuá con el primer recorrido (03_PRIMEROS_PASOS.txt).
+
+6. Volver otro día
+
+
+docker compose stop
+docker compose start
+
+
+stop detiene sin borrar datos. start vuelve a encender los mismos contenedores.
+Después de modificar .env, usá docker compose up -d --force-recreate web.
+Nunca uses down -v: elimina los volúmenes donde viven los datos.
+
+Problemas frecuentes
+
+
+Problema: No se reconoce docker
+Qué hacer: Reabrí la terminal después de instalar Docker Desktop.
+
+Problema: No se conecta al motor
+Qué hacer: Abrí Docker Desktop y comprobá WSL 2 y virtualización.
+
+Problema: Puerto 8000 ocupado
+Qué hacer: Cambiá APP_PORT=8001 en .env, ejecutá docker compose up -d y abrí http://localhost:8001. No mates procesos desconocidos.
+
+Problema: Falta archivo .env
+Qué hacer: Repetí el paso 3 desde la carpeta correcta.
+
+Problema: Base no saludable
+Qué hacer: Revisá docker compose logs db. No borres el volumen.
+
+Problema: Cambiaste POSTGRES_PASSWORD y dejó de conectar
+Qué hacer: Cambiar .env no cambia la clave de una base ya creada. Recuperá la configuración original o pedí asistencia para rotarla con respaldo.
+
+Problema: Sin permisos para ingresar
+Qué hacer: La cuenta requiere aprobación. Seguí la guía de primeros pasos.
+
+Problema: Bloqueo después de varios errores
+Qué hacer: Esperá 15 minutos o pedile al administrador un desbloqueo del usuario.
+
+Esta guía está escrita para PowerShell. No copies variantes de Bash en CMD.
+La ejecución nativa en Windows se debe comprobar con un alumno piloto antes de
+distribuirla a toda la comisión; la prueba automatizada del contenedor no sustituye
+esa comprobación del equipo y WSL.

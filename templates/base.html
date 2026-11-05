@@ -1,0 +1,69 @@
+{% load static %}
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>
+{% block title %}
+Inicio
+{% endblock %}
+ · {{ organizacion_nombre }}</title>
+<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<header class="cabecera">
+<a class="marca" href="{% url 'inicio:home' %}">
+<span class="sello" aria-hidden="true">KA</span>
+<span>{{ organizacion_nombre }}<small>Sistema de gestión del kiosco</small>
+</span>
+</a>
+
+{% if user.is_authenticated %}
+<div class="sesion">
+<span>{{ user.get_full_name|default:user.username }}<small>{{ user.get_rol_display }}</small>
+</span>
+<form method="post" action="{% url 'cuentas:logout' %}">{% csrf_token %}<button class="secundario" type="submit">Cerrar sesión</button>
+</form>
+</div>
+{% endif %}
+</header>
+
+{% if user.is_authenticated %}
+<nav class="navegacion" aria-label="Principal">
+<a href="{% url 'inicio:home' %}"
+{% if request.resolver_match.app_name == 'inicio' %}
+aria-current="page"
+{% endif %}
+>Inicio</a>
+<a href="{% url 'catalogo:lista' %}"
+{% if request.resolver_match.app_name == 'catalogo' %}
+aria-current="page"
+{% endif %}
+>Productos y stock</a>
+
+{% if user.es_administrador %}
+<a href="{% url 'cuentas:usuarios' %}"
+{% if request.resolver_match.app_name == 'cuentas' %}
+aria-current="page"
+{% endif %}
+>Usuarios</a>
+<a href="{% url 'admin:index' %}">Tablas del sistema</a>
+{% endif %}
+</nav>
+{% endif %}
+
+<main id="contenido" tabindex="-1">
+{% for message in messages %}
+<div class="aviso" role="status">{{ message }}</div>
+{% endfor %}
+
+{% block content %}
+
+{% endblock %}
+</main>
+<footer>Kiosco Azul · Práctica Profesional II <span>Instituto Superior del Milagro · Construido sobre la plantilla base de la cátedra</span>
+</footer>
+</body>
+</html>

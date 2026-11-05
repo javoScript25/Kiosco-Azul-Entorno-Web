@@ -1,0 +1,81 @@
+Primer recorrido del sistema
+
+Este recorrido permite comprobar que el código funciona antes de personalizarlo.
+Usá únicamente datos ficticios mientras aprendés.
+
+1. Entrar como administrador
+
+Ingresá con la cuenta creada mediante createsuperuser. En Inicio verás el catálogo
+vacío. Creá una categoría desde Catálogo → Gestionar categorías → Agregar categoría.
+Después creá un producto con código, nombre, categoría, precio y stock.
+
+Opcionalmente podés cargar ejemplos repetibles (reemplazá admin por tu usuario):
+
+
+docker compose exec web python manage.py cargar_demo --usuario admin
+
+
+Los códigos DEMO-001 a DEMO-003 identifican información ficticia. El comando no
+sobrescribe productos existentes. No ejecutarlo sobre datos reales del cliente.
+
+2. Solicitar una cuenta
+
+Abrí una ventana privada del navegador. Elegí «Solicitá acceso» y completá el
+formulario. Verás la confirmación de que la cuenta está pendiente. No puede entrar
+todavía y no recibe permisos administrativos por registrarse.
+
+3. Aprobar o rechazar
+
+En la ventana del administrador, abrí «Solicitudes de acceso». Verificá la identidad
+de la persona fuera del sistema y elegí «Aprobar acceso». La cuenta se convierte en
+operador. La decisión y su autor se registran en el historial administrativo.
+
+Una cuenta rechazada no puede ingresar y no se aprueba automáticamente con un
+segundo envío. Para rectificar una decisión, el administrador debe revisar el caso
+con el docente; no debe alterarse directamente la base ni asignar superusuario.
+El panel Django Admin permite desactivar una cuenta ya aprobada desmarcando
+«Puede ingresar». Esto también impide que siga accediendo con una sesión anterior.
+
+4. Comprobar el CRUD
+
+Con la cuenta del operador: ingresar, listar productos, buscar por código, crear uno,
+abrir su detalle y editarlo. El operador no puede eliminar ni administrar categorías.
+Con el administrador: abrir «Eliminar producto» y confirmar explícitamente.
+Visitar la pantalla de confirmación no borra nada. Una categoría con productos no
+puede borrarse; el sistema pide reasignarlos antes.
+
+El ejemplo usa eliminación física para enseñar el CRUD. Para procesos con trazabilidad
+(ventas, pagos, expedientes), diseñar estados de baja o anulación según las reglas
+confirmadas de la organización. No trasladar la eliminación de este ejemplo a esos
+procesos sin ese análisis.
+
+5. Verificar errores y conservación
+
+- Un precio o stock negativos deben rechazarse.
+- Un código repetido debe mostrar un error sin duplicar el producto.
+- Un visitante sin sesión no debe abrir el catálogo ni escribir enviando una URL directa.
+- Después de docker compose restart, deben seguir existiendo usuario y producto.
+- «Cerrar sesión» debe volver al ingreso e impedir abrir páginas protegidas.
+
+El bloqueo del login dura 15 minutos después de cinco intentos fallidos por usuario.
+El administrador del servidor puede desbloquear un caso verificado:
+
+
+docker compose exec web python manage.py axes_reset_username nombre_del_usuario
+
+
+Contraseñas y correo
+
+No hay recuperación automática por correo en esta entrega. Si alguien olvida su
+contraseña, el administrador comprueba su identidad y utiliza «Cambiar contraseña»
+en /admin/, dentro del usuario correspondiente. No puede ver la contraseña anterior.
+Cambiar una contraseña no aprueba solicitudes pendientes ni habilita usuarios desactivados.
+No compartir cuentas de administrador ni incluir claves en capturas o entregas.
+
+Para ambas modalidades
+
+La tecnología es común. En presencial se acompaña con los entregables de arquitectura,
+Docker y sprints de la comisión. En semipresencial se prioriza el proceso central y
+el cronograma ajustado. El docente define las condiciones académicas; la plantilla
+no determina notas ni cambia el programa. El login y el catálogo son el punto de
+partida: cada grupo debe desarrollar y defender sus propias historias de usuario.

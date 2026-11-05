@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Esperá antes de intentar nuevamente
+{% endblock %}
+
+{% block content %}
+<section class="vacio">
+<h1>Demasiados intentos de ingreso</h1>
+<p>Por seguridad, esperá 15 minutos antes de volver a intentar con ese usuario. Si necesitás ayuda, contactá al administrador.</p>
+<a href="{% url 'cuentas:login' %}">Volver al ingreso</a>
+</section>
+{% endblock %}

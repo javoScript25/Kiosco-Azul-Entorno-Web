@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Usuarios
+{% endblock %}
+
+{% block content %}
+
+<div class="encabezado">
+<div>
+<p class="antetitulo">Acceso y usuarios</p>
+<h1>Usuarios y roles</h1>
+<p>La Dueña es ADMINISTRADOR; la Empleada es OPERADOR. Un usuario desactivado no puede ingresar, pero sus operaciones se conservan.</p>
+</div>
+<a class="boton" href="{% url 'cuentas:usuario_crear' %}">Agregar usuario</a>
+</div>
+<p><a href="{% url 'cuentas:solicitudes' %}">Ver solicitudes de acceso pendientes →</a></p>
+<div class="tabla-scroll" tabindex="0" role="region" aria-label="Usuarios">
+<table>
+<thead>
+<tr>
+<th scope="col">Usuario</th>
+<th scope="col">Nombre</th>
+<th scope="col">Rol</th>
+<th scope="col">Estado</th>
+<th scope="col">Acción</th>
+</tr>
+</thead>
+<tbody>
+{% for u in usuarios %}
+<tr>
+<td><strong>{{ u.username }}</strong><small>{{ u.email }}</small></td>
+<td>{{ u.get_full_name|default:'—' }}</td>
+<td>{{ u.get_rol_display }}</td>
+<td>{% if u.is_active %}Activo{% else %}<span class="etiqueta">Sin acceso</span>{% endif %}</td>
+<td><a href="{% url 'cuentas:usuario_editar' u.pk %}" aria-label="Editar {{ u.username }}">Editar</a></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

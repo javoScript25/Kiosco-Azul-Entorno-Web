@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% if object %}Editar{% else %}Agregar{% endif %} producto
+{% endblock %}
+
+{% block content %}
+
+<div class="form-contenedor">
+<a class="volver" href="{% url 'catalogo:lista' %}">← Volver a productos</a>
+<p class="antetitulo">Catálogo</p>
+<h1>{% if object %}Editar{% else %}Agregar{% endif %} producto</h1>
+<p>{% if object %}Si cambiás el costo o el precio de venta, el cambio queda en el historial de precios.{% else %}El producto se crea con stock 0: el stock entra cuando se registra la mercadería recibida.{% endif %}</p>
+
+{% if not form.fields.categoria.queryset.exists %}
+<div class="aviso">Primero se necesita una categoría. <a href="{% url 'catalogo:categoria_crear' %}">Crear categoría</a></div>
+{% endif %}
+
+<form method="post" class="panel">{% csrf_token %}{% include 'componentes/formulario.html' %}<div class="acciones">
+<button type="submit">Guardar producto</button>
+<a href="{% url 'catalogo:lista' %}">Cancelar</a>
+</div>
+</form>
+</div>
+{% endblock %}

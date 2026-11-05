@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Iniciar sesión
+{% endblock %}
+
+{% block content %}
+<div class="acceso">
+<section class="introduccion">
+<p class="antetitulo">Todo en un mismo lugar</p>
+<h1>Kiosco Azul,<br> todo en orden.</h1>
+<p>Ventas, caja y stock del kiosco en un solo lugar, en la PC del local.</p>
+<div class="nota">El acceso requiere una cuenta aprobada por el administrador.</div>
+</section>
+<section class="panel">
+<h2>Iniciar sesión</h2>
+<p>Ingresá con tu nombre de usuario y contraseña.</p>
+<form method="post">{% csrf_token %}{% include 'componentes/formulario.html' %}<input type="hidden" name="next" value="{{ next }}">
+<button class="ancho" type="submit">Ingresar al sistema</button>
+</form>
+<p class="pie-form">¿Es tu primera vez? <a href="{% url 'cuentas:registro' %}">Solicitá acceso</a>.</p>
+<p class="ayuda">Si olvidaste tu contraseña, contactá al administrador.</p>
+</section>
+</div>
+{% endblock %}

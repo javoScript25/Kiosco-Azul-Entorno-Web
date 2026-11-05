@@ -1,0 +1,87 @@
+Instalación en Ubuntu
+
+Usaremos Docker Engine y Compose, sin Docker Desktop. Recomendamos Ubuntu 24.04
+LTS de 64 bits, 8 GB de RAM, dos núcleos y unos 20 GB libres en SSD. Equipos de 4 GB
+pueden requerir menos programas abiertos y una prueba específica de rendimiento.
+
+1. Instalar Docker
+
+Seguí la instalación oficial de Docker Engine para Ubuntu (https://docs.docker.com/engine/install/ubuntu/)
+por repositorio apt. Instalá también el complemento Docker Compose que indica
+esa guía. No mezcles instalaciones de Snap, Docker Desktop y apt.
+Si ya existe Docker, comprobalo antes de reemplazarlo: puede alojar otros proyectos.
+
+
+docker version
+docker compose version
+
+
+Deben aparecer Client y Server. Si tu usuario no tiene acceso al motor, consultá al
+administrador del equipo. Pertenecer al grupo docker concede privilegios elevados;
+no cambies esos permisos en un equipo compartido sin autorización. La alternativa
+es ejecutar los comandos Docker con sudo según las reglas del equipo.
+
+Instalá VS Code y Git si los necesitás. No hace falta instalar PostgreSQL ni Python
+para ejecutar la plantilla: se incluyen en los contenedores.
+
+2. Abrir el código
+
+Extraé el ZIP en una carpeta propia y abrila en VS Code. En la terminal de esa
+carpeta, ls debe mostrar compose.yaml y manage.py.
+
+
+docker run --rm --user "$(id -u):$(id -g)" --mount "type=bind,source=$(pwd),target=/workspace" -w /workspace python:3.12-slim-bookworm@sha256:6a0e06f5ba0b373d051aabd3fffb9b873f27f9a2a3a14bcbe37dee6f0e3bbc70 python scripts/configurar.py
+
+
+Se crea .env con claves aleatorias y permisos restringidos. Si existe, no se
+sobrescribe. Nunca lo subas a Git ni lo incluyas en el ZIP que entregás a compañeros.
+
+Para que los archivos de migración queden a nombre de tu usuario:
+
+
+export DEV_UID=$(id -u)
+export DEV_GID=$(id -g)
+
+
+Si tu usuario no tiene UID/GID 1000, anotá los valores que devuelven id -u y
+id -g como DEV_UID y DEV_GID en .env para conservarlos entre terminales.
+
+3. Iniciar y crear el administrador
+
+
+docker compose up --build -d
+docker compose logs -f web
+
+
+Esperá el mensaje Starting development server. Ctrl+C sale de los logs y deja
+el servicio encendido. Abrí http://localhost:8000.
+
+
+docker compose exec web python manage.py createsuperuser
+
+
+Elegí un nombre en minúsculas, correo y contraseña propios. La contraseña no se
+muestra mientras la escribís. Seguí el primer recorrido (03_PRIMEROS_PASOS.txt).
+
+4. Detener y reanudar
+
+
+docker compose stop
+docker compose start
+
+
+Los datos se conservan en un volumen. No uses down -v ni borres volúmenes.
+Cambiar .env requiere recrear el servicio web: docker compose up -d --force-recreate web.
+La contraseña inicial de PostgreSQL solo se utiliza al crear un volumen nuevo;
+cambiarla en .env no actualiza una base existente.
+
+Si el puerto está ocupado, cambiá APP_PORT en .env a 8001 y ejecutá
+docker compose up -d. Abrí entonces http://localhost:8001.
+Para problemas de base o inicio, revisá docker compose logs db web.
+No uses chmod 777 ni elimines la base para resolver un error de permisos.
+
+Dos proyectos en el mismo equipo
+
+Cada copia debe tener otro COMPOSE_PROJECT_NAME y APP_PORT en su .env.
+Por ejemplo pp2_otro_grupo y 8001. No cambies el nombre de un proyecto existente
+sin planificarlo: sus datos siguen en el volumen del nombre anterior.

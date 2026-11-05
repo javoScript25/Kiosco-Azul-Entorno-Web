@@ -1,0 +1,378 @@
+{
+  "version_esquema": 1,
+  "perfil": "alumnos",
+  "commit": "a45d1428c7dd86f11d43b52d548ca026e5e244f8",
+  "rama": "main",
+  "fecha_utc": "2026-10-26T18:43:40.531688+00:00",
+  "plataforma_empaquetado": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "origen_respaldo": "Código confirmado en Git; sin base, cuentas ni configuración privada.",
+  "imagenes": "Digest fijado en Dockerfile y archivos compose.",
+  "verificacion": "python scripts/verificar_entrega.py",
+  "artefactos": [
+    {
+      "ruta": ".dockerignore",
+      "bytes": 66,
+      "sha256": "2dd667172b6087aacf1b9b40ed246a75c5cf5665fd2fe99258ab889acfd40850"
+    },
+    {
+      "ruta": ".env.example",
+      "bytes": 317,
+      "sha256": "5e197629e791360884233294d1e8cda5a26f8799beee6b57cd0a60701a686c03"
+    },
+    {
+      "ruta": ".gitignore",
+      "bytes": 101,
+      "sha256": "92d67b286262bfd2ee65f3ae8528b92112a7cddbbd0ff323bf6227f88251936f"
+    },
+    {
+      "ruta": "Dockerfile",
+      "bytes": 610,
+      "sha256": "4e1556d99514c98426f12206c5000f69cc711782dd88330d6d645fe2f3aed779"
+    },
+    {
+      "ruta": "catalogo/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta": "catalogo/admin.py",
+      "bytes": 93,
+      "sha256": "ee191c8324561bb31c2b3c594dc8664dd46c65ff142452d68c7300c1fdd0b00d"
+    },
+    {
+      "ruta": "catalogo/forms.py",
+      "bytes": 1072,
+      "sha256": "55dc703bb9300b74833a3b5fcecf332d21ec9f7ed17f62e40ca0910dbddaaece"
+    },
+    {
+      "ruta": "catalogo/migrations/0001_initial.py",
+      "bytes": 2548,
+      "sha256": "c41bc97c5844d7aaeb05e7a0e4fdd76e53feee803ce1fad498e2dac8af0a5ff9"
+    },
+    {
+      "ruta": "catalogo/migrations/0002_initial.py",
+      "bytes": 1869,
+      "sha256": "10d9887af5deb5ee1c801b0a53c2e50a1043fac53c3220d7ec50031699d1008c"
+    },
+    {
+      "ruta": "catalogo/migrations/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta": "catalogo/models.py",
+      "bytes": 1990,
+      "sha256": "e3b48468db65ca9b7bc9c35225c5ff813df871d7568dfdb1b20e16765eb68a31"
+    },
+    {
+      "ruta": "catalogo/tests.py",
+      "bytes": 7970,
+      "sha256": "91a6ed47e5a9f1a9d9dbc3b28acf85975a655fd4eb7973abee3f8bced8be598d"
+    },
+    {
+      "ruta": "catalogo/urls.py",
+      "bytes": 920,
+      "sha256": "f97892e6bad45f1958df03f1aa0d629276e7e52e3e95fc60c3f5b31155d77b05"
+    },
+    {
+      "ruta": "catalogo/views.py",
+      "bytes": 3901,
+      "sha256": "d5de06756b7fa18b489f1d301785b160d2217e0ac0980175401b89a7cc4f907a"
+    },
+    {
+      "ruta": "compose.servidor.yaml",
+      "bytes": 1714,
+      "sha256": "038f9ef5e5c11cd7192300cf2179212d4cebf7f2a0f346777131275ce0f2fc85"
+    },
+    {
+      "ruta": "compose.yaml",
+      "bytes": 875,
+      "sha256": "e62863f4fc7b02d114913574d7507289e132e1b4b26f15cf4bd38e2f7da43c5b"
+    },
+    {
+      "ruta": "config/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta": "config/settings.py",
+      "bytes": 5071,
+      "sha256": "24b649aefa73eb384c07fbc8d3ae0396c61b57eea59635075d74280347e4dd45"
+    },
+    {
+      "ruta": "config/urls.py",
+      "bytes": 366,
+      "sha256": "a645c017eae926b0a189d73ab789004f40bc431a8346fad3c3fdff859d430953"
+    },
+    {
+      "ruta": "config/wsgi.py",
+      "bytes": 165,
+      "sha256": "eae3ca58dd999ba3acca85130f6c2fbae3b7a511850b0bb692c9073c0d8a21d0"
+    },
+    {
+      "ruta": "cuentas/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta": "cuentas/admin.py",
+      "bytes": 873,
+      "sha256": "d1d928b6b2bf7e1f350d08ad32a3ae7f9d0895b8d04f817b8e9c408fd60f81a9"
+    },
+    {
+      "ruta": "cuentas/forms.py",
+      "bytes": 1662,
+      "sha256": "32ad675ea0274c8d2acd95972cf29b1d04ea5b78fc0b7ddc61b033a99980f2d6"
+    },
+    {
+      "ruta": "cuentas/migrations/0001_initial.py",
+      "bytes": 5771,
+      "sha256": "87d6ef8cc6e75a5e53cf6d1d957cc7b439a8368ec92d6c97ab2751e877f9cbd4"
+    },
+    {
+      "ruta": "cuentas/migrations/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta": "cuentas/models.py",
+      "bytes": 1621,
+      "sha256": "1351bee604a376dc188b19a0c1381d9628bbe56fd30fcad3710b84d6bb8542ff"
+    },
+    {
+      "ruta": "cuentas/seguridad.py",
+      "bytes": 118,
+      "sha256": "6a8ee41ac63980711a1f6a16535feee601545160331de78e256a9698b92ec6d0"
+    },
+    {
+      "ruta": "cuentas/services.py",
+      "bytes": 1056,
+      "sha256": "7d12f852d68421f1034e3d419f1fe8fc12c8f67dd3ac5d7c33487c3e29c439e5"
+    },
+    {
+      "ruta": "cuentas/tests.py",
+      "bytes": 7284,
+      "sha256": "97db5718d12516554625b73dbca6847220111767d8583590d85345b79d0cdcf8"
+    },
+    {
+      "ruta": "cuentas/urls.py",
+      "bytes": 520,
+      "sha256": "05594cb64254cf43542970b9f18ec2150ea14201b2e5a501b020b637864ccee8"
+    },
+    {
+      "ruta": "cuentas/views.py",
+      "bytes": 2183,
+      "sha256": "7e6a97d42516501997b4696a9c3c4fe458b04fb17e3ab1a8f1e9100db0a495cc"
+    },
+    {
+      "ruta": "docs/01_WINDOWS.txt",
+      "bytes": 4680,
+      "sha256": "976be44eedc8f139f1296043005bd852be1b8754da7ce4ef74c3355232fc00a0"
+    },
+    {
+      "ruta": "docs/02_UBUNTU.txt",
+      "bytes": 3328,
+      "sha256": "80c23e34494d39c53354a418ce3643ed6df3c51611a5942902404c133d2595e3"
+    },
+    {
+      "ruta": "docs/03_PRIMEROS_PASOS.txt",
+      "bytes": 3970,
+      "sha256": "9078e1c5a0e0c1f5eb8087a6b8590a1ca3b6f6e03127d8b6c059b81d82788d88"
+    },
+    {
+      "ruta": "docs/04_PERSONALIZACION.txt",
+      "bytes": 4654,
+      "sha256": "52656a227de2491603f29a087e159820567c3a995bf7f269dafb4908af6fdb3d"
+    },
+    {
+      "ruta": "docs/05_SERVIDOR.txt",
+      "bytes": 5163,
+      "sha256": "ab036769a5327385e95254659e423d13ad4b98367c2b8af56cfef5cd85ddb97d"
+    },
+    {
+      "ruta": "docs/ENTREGA_COMPLETA.txt",
+      "bytes": 5087,
+      "sha256": "d9f024e0c1d03cc7ae4dd645c1fc7ab21fb404daf4577d0033896a9a2f3bfc0f"
+    },
+    {
+      "ruta": "docs/ESTADO_PROYECTO.txt",
+      "bytes": 2168,
+      "sha256": "49fda94b4e25c40ee2b13d40ad30ff84b7af1bcb43295e1094fb43a2eaf65702"
+    },
+    {
+      "ruta": "docs/VERIFICACION.txt",
+      "bytes": 2791,
+      "sha256": "ffba0ee079f4ee6151c2c492e907febdfca4e7541cd26743cdb6b5636d5f4683"
+    },
+    {
+      "ruta": "infra/Caddyfile",
+      "bytes": 66,
+      "sha256": "fce5980eb34e45527a3faeb3c51d5cb7572e7dbf1eb6e897104881786d56538f"
+    },
+    {
+      "ruta": "infra/Caddyfile.local",
+      "bytes": 225,
+      "sha256": "3ee198bd5f5cacde89c75c4ced277f1055239326810e7d7872811147d5d8dafc"
+    },
+    {
+      "ruta": "inicio/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta": "inicio/context_processors.py",
+      "bytes": 117,
+      "sha256": "3198a3dd55a88a77d5eafc57b81aebec0f05b0caadb2fefd6456c304dfebe161"
+    },
+    {
+      "ruta": "inicio/management/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta": "inicio/management/commands/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta": "inicio/management/commands/cargar_demo.py",
+      "bytes": 1871,
+      "sha256": "c178e333f133c64246e6de595b1b79fb40bb6b810a26878c348f1727d89a1879"
+    },
+    {
+      "ruta": "inicio/urls.py",
+      "bytes": 174,
+      "sha256": "325aad260ba5c882553890a0fb12b45af8a2b821806f924fd33ddbc74ba069f8"
+    },
+    {
+      "ruta": "inicio/views.py",
+      "bytes": 1037,
+      "sha256": "d6df4278099ae8428a89062a1aa7bd3a331b27799a5490028c4bf91ab040c4d2"
+    },
+    {
+      "ruta": "manage.py",
+      "bytes": 243,
+      "sha256": "fc8cf9e71ebd7be737d4492b1e9d8de470492e321050cbf48746829cc13e1816"
+    },
+    {
+      "ruta": "requirements.in",
+      "bytes": 93,
+      "sha256": "96bddefad84712c6756b2fd6b21094e852d3b633a27123637909c204c2263964"
+    },
+    {
+      "ruta": "requirements.txt",
+      "bytes": 248,
+      "sha256": "fefa8e3d6f77074d022c66b9fe34b5f1776004dd46bfabf60219dfacbfc74d5e"
+    },
+    {
+      "ruta": "scripts/configurar.py",
+      "bytes": 805,
+      "sha256": "f9b43c5ad8551f16bf9eff6e3c2be19379cc2e115423dbd70cdc0e61420d8eca"
+    },
+    {
+      "ruta": "scripts/empaquetar.py",
+      "bytes": 3840,
+      "sha256": "c7b367a952328fbe8a3eb7916bcc8e0214c58d01da0755d980ff9312b476a8b1"
+    },
+    {
+      "ruta": "scripts/verificar_entrega.py",
+      "bytes": 930,
+      "sha256": "056afd2b009559d2ae82f6139ff75679984aa6c4da842416590f587f3d5c7c88"
+    },
+    {
+      "ruta": "static/css/estilos.css",
+      "bytes": 8708,
+      "sha256": "490858b9da37ca832fb2baeb0b648a8684d69f2a94fbffe8aa89a3ec0d04c6fb"
+    },
+    {
+      "ruta": "templates/403.html",
+      "bytes": 346,
+      "sha256": "7634b6881eac5fc36ee969ee496f9df445c1b15d008a4390c70c2bff3b3526ef"
+    },
+    {
+      "ruta": "templates/404.html",
+      "bytes": 349,
+      "sha256": "6331521ed1bce492986a510cf62ebab96a0c19f3deb4c95a24afb4c7f6d7778b"
+    },
+    {
+      "ruta": "templates/500.html",
+      "bytes": 383,
+      "sha256": "d705a31f2a5010392c81ce7ba0c9baf8fe13ba60101f04aa742c9d0ed6b0de45"
+    },
+    {
+      "ruta": "templates/base.html",
+      "bytes": 1889,
+      "sha256": "adacd17ed98dd28e31f41b7060ceb795642b62453900d5f1f8c1866c7959e2d7"
+    },
+    {
+      "ruta": "templates/catalogo/categoria_form.html",
+      "bytes": 457,
+      "sha256": "bc72258d194adcb9ad14e7d43fba0b9a91210edd01ddda01c35bce1c5f3dc452"
+    },
+    {
+      "ruta": "templates/catalogo/categorias.html",
+      "bytes": 975,
+      "sha256": "83ade4db49bcd42ad9590214361a74477e4dff2d304b5b9eda377cd30365589c"
+    },
+    {
+      "ruta": "templates/catalogo/confirmar_baja.html",
+      "bytes": 562,
+      "sha256": "506010367870d5ad0c88abb8a39da107166b2d389839f2ec37f9d9c50a834de1"
+    },
+    {
+      "ruta": "templates/catalogo/detalle.html",
+      "bytes": 1056,
+      "sha256": "840dc67c191b555ec592a8b148929ae863adc923fdd82bef2070569facf2cef5"
+    },
+    {
+      "ruta": "templates/catalogo/formulario.html",
+      "bytes": 971,
+      "sha256": "c481d9447903e6fd0034850313ac2221baa25405890f864be1c134621befcc8f"
+    },
+    {
+      "ruta": "templates/catalogo/lista.html",
+      "bytes": 1938,
+      "sha256": "8106edc0c3c877ffe67d9752f6c5a37f20dd975688812d8535f4314b5f579d16"
+    },
+    {
+      "ruta": "templates/componentes/formulario.html",
+      "bytes": 587,
+      "sha256": "dfec85721334129f9f61234111149ed3bdce23939d6ac367c4a0aa14ef543e47"
+    },
+    {
+      "ruta": "templates/componentes/paginacion.html",
+      "bytes": 441,
+      "sha256": "538442be29494add69e299dec0376efdb042a2993fce589ee2887f5a73de546e"
+    },
+    {
+      "ruta": "templates/cuentas/bloqueo.html",
+      "bytes": 400,
+      "sha256": "eeb2518acde7d3ac42cd805cda7dca336f6695a4da1a64ab3830102c3254b0c4"
+    },
+    {
+      "ruta": "templates/cuentas/login.html",
+      "bytes": 958,
+      "sha256": "b59f9490f3f62847acdb117cc2ccebc8bdc9a2ea04d8b1df92f8cf6e60b852e5"
+    },
+    {
+      "ruta": "templates/cuentas/pendiente.html",
+      "bytes": 534,
+      "sha256": "342732d1ca1ab22ac865c61feb25d7f72e003cf1f4e6451a2a4ecca51d21b4ab"
+    },
+    {
+      "ruta": "templates/cuentas/registro.html",
+      "bytes": 543,
+      "sha256": "dc34e1f573aacdf1106cd0d5e241b11695e86853af49878e487346e61fe16d54"
+    },
+    {
+      "ruta": "templates/cuentas/solicitudes.html",
+      "bytes": 1010,
+      "sha256": "82ccc0f10f29e98f748e2c38786a5a673fb86ecfbaf495e27dce06474cc63f1a"
+    },
+    {
+      "ruta": "templates/inicio/home.html",
+      "bytes": 1552,
+      "sha256": "20245005380ce74b5a988849a637d0f42a77860b3348b29f42718a95b23a9414"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Solicitudes de acceso
+{% endblock %}
+
+{% block content %}
+
+<p class="antetitulo">Administración de usuarios</p>
+<h1>Solicitudes de acceso</h1>
+<p>Verificá quién solicita acceso antes de habilitar su cuenta. La aprobación concede el rol OPERADOR (Empleada).</p>
+<div class="solicitudes">
+{% for persona in solicitudes %}
+<article class="panel solicitud">
+<div>
+<h2>{{ persona.get_full_name|default:persona.username }}</h2>
+<p>{{ persona.username }} · {{ persona.email }}</p>
+<small>Solicitud del {{ persona.date_joined|date:'d/m/Y H:i' }}</small>
+</div>
+<form method="post" action="{% url 'cuentas:resolver' persona.pk %}">{% csrf_token %}<button name="accion" value="aprobar">Aprobar acceso</button>
+<button class="peligro" name="accion" value="rechazar">Rechazar</button>
+</form>
+</article>{% empty %}<div class="vacio">
+<h2>No hay solicitudes pendientes</h2>
+<p>Cuando alguien se registre, su solicitud aparecerá acá.</p>
+</div>
+{% endfor %}
+</div>
+{% endblock %}

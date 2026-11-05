@@ -1,0 +1,51 @@
+# Archivo independiente: no combinar con compose.yaml.
+services:
+  db:
+    image: postgres:17-bookworm@sha256:858bb5e98eed02eb8cafbcdc007f9a65d1b613972028944a8ec2133ccaf80d27
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-pp2}
+      POSTGRES_USER: ${POSTGRES_USER:-pp2}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configura .env antes de iniciar}
+    volumes:
+      - datos_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+  web:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DJANGO_DEBUG: "False"
+      DJANGO_ALLOWED_HOSTS: ${APP_DOMAIN:?Configura el dominio o nombre interno del servidor}
+      DJANGO_CSRF_TRUSTED_ORIGINS: https://${APP_DOMAIN}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,urllib.request; u='http://127.0.0.1:8000/salud/'; r=urllib.request.Request(u,headers={'Host':os.environ['DJANGO_ALLOWED_HOSTS'],'X-Forwarded-Proto':'https'}); urllib.request.urlopen(r,timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  proxy:
+    image: caddy:2-alpine@sha256:eb4d35b7452d1ab6171fbdbe8d9275b2301dad6dad92115d91e19fb9b24d510f
+    restart: unless-stopped
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/Caddyfile:/etc/caddy/Caddyfile:ro
+      - certificados:/data
+      - configuracion_proxy:/config
+    depends_on:
+      web:
+        condition: service_healthy
+volumes:
+  datos_postgres:
+  certificados:
+  configuracion_proxy:
