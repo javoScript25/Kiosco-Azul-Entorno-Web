@@ -1,0 +1,34 @@
+/* Identidad de Kiosco Azul: azul marino #0a082d y celeste cielo #2f60d0 */
+:root {
+  --ka-marino: #0a082d;
+  --ka-celeste: #2f60d0;
+  --ka-fondo: #f4f6fb;
+  --bs-primary: #2f60d0;
+  --bs-primary-rgb: 47, 96, 208;
+  --bs-link-color: #2f60d0;
+  --bs-link-color-rgb: 47, 96, 208;
+  --bs-body-color: #16152f;
+}
+body { background: var(--ka-fondo); }
+.btn-primary {
+  --bs-btn-bg: var(--ka-celeste); --bs-btn-border-color: var(--ka-celeste);
+  --bs-btn-hover-bg: #2550b3; --bs-btn-hover-border-color: #2550b3;
+  --bs-btn-active-bg: var(--ka-marino); --bs-btn-disabled-bg: var(--ka-celeste);
+}
+.btn-outline-primary {
+  --bs-btn-color: var(--ka-celeste); --bs-btn-border-color: var(--ka-celeste);
+  --bs-btn-hover-bg: var(--ka-celeste); --bs-btn-hover-border-color: var(--ka-celeste);
+}
+.ka-barra { background: var(--ka-marino); }
+.ka-sello {
+  display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 10px;
+  background: var(--ka-celeste); color: #fff; font-weight: 800; letter-spacing: -.5px;
+}
+.ka-barra .nav-link { color: #c9d3f2; }
+.ka-barra .nav-link.active, .ka-barra .nav-link:hover { color: #fff; }
+.ka-tarjeta { background: #fff; border: 1px solid #d7dcea; border-radius: 14px; }
+.ka-dato { font-size: 2rem; font-weight: 800; color: var(--ka-marino); line-height: 1; }
+.ka-alerta { color: #9a4b00; font-weight: 650; }
+.ka-login { min-height: 100vh; background: linear-gradient(135deg, var(--ka-marino), var(--ka-celeste)); }
+.table td, .table th { vertical-align: middle; }
+.cursor { cursor: pointer; }

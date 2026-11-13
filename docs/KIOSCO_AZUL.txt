@@ -33,6 +33,19 @@ Qué desarrollamos nosotros (Sprint 3)
 - Datos de prueba ficticios en las 14 tablas (comando cargar_demo).
 - 46 pruebas automáticas (caso correcto y caso de error de cada historia).
 
+Sprint 4: API REST y frontend en React
+
+- api/ (app nueva): API REST con Django REST Framework en /api/, según el contrato
+  del documento. Sesión de Django + token CSRF; errores en el formato
+  {"error", "mensaje", "campos"}. Usa los mismos servicios que las pantallas.
+  Endpoints de este sprint: auth (csrf, login, logout, yo), usuarios, categorias,
+  productos (búsqueda, lector de código, historial de precios), stock,
+  medios-pago y cajas (abrir y caja actual).
+- frontend/: React + Vite + Bootstrap. En desarrollo, Vite (puerto 5173) reenvía
+  /api a Django (puerto 8000), así el navegador ve un solo origen.
+- Las pantallas de Django de la plantilla siguen funcionando mientras se completa
+  el frontend; "Tablas del sistema" (/admin/) sigue siendo la consulta de tablas.
+
 Correspondencia con el diccionario de datos
 
 - Las tablas se llaman como en el DER (producto, venta, apertura_caja, ...), salvo
@@ -45,8 +58,14 @@ Correspondencia con el diccionario de datos
 - Producto conserva además creado_por, actualizado_por, creado y actualizado
   (auditoría, RNF-04).
 
+Frontend (en otra terminal, dentro de plantilla-pp2/frontend; Docker encendido)
+
+  npm install        (solo la primera vez o si cambia package.json)
+  npm run dev        y abrir http://localhost:5173
+
 Instalar o actualizar (dentro de la carpeta plantilla-pp2)
 
+  docker compose up -d --build        (después de agregar una dependencia)
   docker compose exec web python manage.py migrate
   docker compose exec web python manage.py test --noinput
   docker compose exec web python manage.py cargar_demo --usuario TU_USUARIO --con-empleada
