@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     "ventas",
     "inventario",
     "inicio",
+    "rest_framework",
+    "api",
     "axes",
 ]
 MIDDLEWARE = [
@@ -136,8 +138,20 @@ AXES_RESET_ON_SUCCESS = True
 AXES_LOCKOUT_PARAMETERS = ["username"]
 AXES_CLIENT_IP_CALLABLE = "cuentas.seguridad.sin_ip"
 AXES_LOCKOUT_TEMPLATE = "cuentas/bloqueo.html"
+AXES_LOCKOUT_CALLABLE = "cuentas.seguridad.respuesta_de_bloqueo"
 
 # Se limita por cuenta, independientemente de IP, navegador y cookies.
 # Así no se bloquea a toda el aula que comparte una IP. La prueba de bloqueo
 # cambia esos datos y confirma que no eluden el límite. W006 exige siempre IP.
 SILENCED_SYSTEM_CHECKS = ["axes.W006"]
+
+# API REST (Sprint 4): sesión de Django + CSRF. En desarrollo, Vite (puerto 5173) reenvía /api a Django,
+# así el navegador ve un solo origen y no hace falta CORS ni guardar tokens en el navegador.
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.SessionAuthentication"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"]
+    + (["rest_framework.renderers.BrowsableAPIRenderer"] if DEBUG else []),
+    "EXCEPTION_HANDLER": "api.errores.manejar_error",
+    "COERCE_DECIMAL_TO_STRING": True,
+}
