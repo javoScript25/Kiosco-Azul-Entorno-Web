@@ -1,6 +1,6 @@
 {% load static %}
 <!doctype html>
-<html lang="es-AR">
+<html lang="es" data-lte-color-mode="off" data-bs-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,13 +9,16 @@
 Inicio
 {% endblock %}
  · {{ organizacion_nombre }}</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.3.0/index.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@4/dist/css/adminlte.min.css" />
 <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 </head>
 <body>
 <a class="skip" href="#contenido">Saltar al contenido</a>
 <header class="cabecera">
 <a class="marca" href="{% url 'inicio:home' %}">
-<span class="sello" aria-hidden="true">KA</span>
+<span class="sello" aria-hidden="true"><img src="{% static 'css/img/image.png' %}" alt=""></span>
 <span>{{ organizacion_nombre }}<small>Sistema de gestión del kiosco</small>
 </span>
 </a>
@@ -59,11 +62,151 @@ aria-current="page"
 <div class="aviso" role="status">{{ message }}</div>
 {% endfor %}
 
-{% block content %}
-
-{% endblock %}
+{% block content %}{% endblock %}
 </main>
-<footer>Kiosco Azul · Práctica Profesional II 
+<footer>Kiosco Azul · Práctica Profesional II
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@4/dist/js/adminlte.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+
+<script>
+  (() => {
+    'use strict';
+    const { Chart } = globalThis;
+    if (!Chart) {
+      return;
+    }
+
+    const root = document.documentElement;
+    const cssVar = (name, fallback = '') =>
+      getComputedStyle(root).getPropertyValue(name).trim() || fallback;
+
+    const alpha = (color, opacity) => {
+      let hex = String(color).trim().replace(/^#/, '');
+      if (!/^[\da-f]{3}([\da-f]{3})?$/i.test(hex)) {
+        return color;
+      }
+
+      if (hex.length === 3) {
+        hex = [...hex].map((c) => c + c).join('');
+      }
+
+      const [r, g, b] = [0, 2, 4].map((i) => Number.parseInt(hex.slice(i, i + 2), 16));
+      return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    };
+
+    const areaFill =
+      (color, from = 0.35, to = 0) =>
+      (context) => {
+        const { ctx, chartArea } = context.chart;
+        if (!chartArea) {
+          return alpha(color, from);
+        }
+
+        const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+        gradient.addColorStop(0, alpha(color, from));
+        gradient.addColorStop(1, alpha(color, to));
+        return gradient;
+      };
+
+    let applied = [];
+
+    const apply = () => {
+      const text = cssVar('--bs-secondary-color', '#6c757d');
+      const body = cssVar('--bs-body-color', '#212529');
+      const surface = cssVar('--bs-body-bg', '#fff');
+      const grid = `rgba(${cssVar('--bs-emphasis-color-rgb', '0, 0, 0')}, 0.08)`;
+      const rtl = root.getAttribute('dir') === 'rtl';
+      const d = Chart.defaults;
+      applied = [text, grid];
+
+      d.font.family = cssVar('--bs-body-font-family', d.font.family);
+      d.font.size = 12;
+      d.color = text;
+      d.borderColor = grid;
+      d.maintainAspectRatio = false;
+
+      d.scale.grid.color = grid;
+      d.scale.border.color = grid;
+      d.scale.ticks.padding = 8;
+      d.set('scales.linear', { border: { display: false } });
+      d.set('scales.category', { grid: { display: false } });
+
+      d.elements.line.borderWidth = 2;
+      d.elements.point.radius = 0;
+      d.elements.point.hoverRadius = 5;
+      d.elements.point.hitRadius = 8;
+      d.elements.point.hoverBorderWidth = 2;
+      d.elements.point.borderColor = surface;
+      d.elements.bar.borderRadius = 4;
+      d.elements.arc.borderColor = surface;
+      d.elements.arc.borderWidth = 2;
+
+      const { legend, tooltip } = d.plugins;
+      legend.position = 'bottom';
+      legend.rtl = rtl;
+      Object.assign(legend.labels, {
+        color: body,
+        usePointStyle: true,
+        pointStyle: 'circle',
+        boxWidth: 8,
+        boxHeight: 8,
+        padding: 16,
+      });
+
+      Object.assign(tooltip, {
+        rtl,
+        backgroundColor: surface,
+        borderColor: cssVar('--bs-border-color', '#dee2e6'),
+        borderWidth: 1,
+        titleColor: cssVar('--bs-emphasis-color', '#000'),
+        bodyColor: body,
+        titleFont: { weight: '600' },
+        padding: 10,
+        cornerRadius: 6,
+        caretSize: 5,
+        boxPadding: 4,
+        usePointStyle: true,
+      });
+
+      for (const type of ['line', 'bar']) {
+        Chart.overrides[type].interaction = { mode: 'index', intersect: false };
+      }
+    };
+
+    const forgetThemeColors = (options, stale) => {
+      for (const [key, value] of Object.entries(options)) {
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+          forgetThemeColors(value, stale);
+        } else if (/color$/i.test(key) && stale.includes(value)) {
+          delete options[key];
+        }
+      }
+    };
+
+    const refresh = () => {
+      const stale = applied;
+      apply();
+      for (const chart of Object.values(Chart.instances)) {
+        forgetThemeColors(chart.config.options.scales || {}, stale);
+        chart.update('none');
+      }
+    };
+
+    apply();
+    new MutationObserver(refresh).observe(root, {
+      attributes: true,
+      attributeFilter: ['data-bs-theme', 'dir'],
+    });
+    document.fonts?.addEventListener('loadingdone', refresh);
+
+    globalThis.lteChartTheme = { cssVar, alpha, areaFill, refresh };
+  })();
+</script>
+
+{% block scripts %}{% endblock %}
 </body>
 </html>

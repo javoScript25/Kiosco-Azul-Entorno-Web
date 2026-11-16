@@ -1,12 +1,15 @@
-/* Cambiá estas variables para adaptar la identidad de tu organización. */
 :root {
-  --marca:#2f60d0;
-  --marca-oscura:#0a082d;
-  --fondo:#f4f6fb;
+  --marca:#0b3d75;
+  --marca-oscura:#082b54;
+  --marca-tenue:#e5edf8;
+  --hover:#edf2f9;
+  --fondo:#f3f6fa;
   --papel:#fff;
-  --texto:#16152f;
-  --suave:#4f5670;
-  --borde:#d7dcea;
+  --texto:#14213a;
+  --suave:#52617a;
+  --borde:#d6dee9;
+  --campo:#7a8aa3;
+  --vacio:#9fb0c8;
   --error:#9b2626;
   --radio:12px;
 }
@@ -101,13 +104,15 @@ button:hover,.boton:hover {
 .sello {
   display:grid;
   place-items:center;
-  width:44px;
-  height:44px;
+  width:160px;
+  height:73px;
   flex-shrink:0;
-  background:var(--marca);
-  color:white;
-  border-radius:10px;
-  font-size:24px;
+}
+.sello img {
+  display:block;
+  width:170px;
+  height:100%;
+  object-fit:contain;
 }
 .marca small,.sesion small {
   display:block;
@@ -236,7 +241,7 @@ input:not([type=hidden]),select,textarea {
   padding:11px 12px;
   min-height:46px;
   background:#fff;
-  border:1px solid #8892ab;
+  border:1px solid var(--campo);
   border-radius:6px;
   color:var(--texto);
 }
@@ -286,7 +291,7 @@ textarea {
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
   gap:0;
-  background:#e6edfb;
+  background:var(--marca-tenue);
   border-radius:var(--radio);
   margin:32px 0 44px;
   padding:12px;
@@ -321,7 +326,7 @@ textarea {
   display:block;
 }
 .lista-recientes>a:hover {
-  background:#eef2fc;
+  background:var(--hover);
 }
 .herramientas {
   display:flex;
@@ -357,7 +362,7 @@ caption {
 }
 th {
   text-align:left;
-  background:#eef2fc;
+  background:var(--hover);
   font-size:13px;
   font-weight:650;
 }
@@ -381,7 +386,7 @@ tr:last-child td {
 .vacio {
   text-align:center;
   padding:60px 24px;
-  border:1px dashed #a7b3cf;
+  border:1px dashed var(--vacio);
   border-radius:var(--radio);
 }
 .vacio h2 {
@@ -436,7 +441,7 @@ dd {
   padding:15px 20px;
   margin-bottom:24px;
   border-left:4px solid var(--marca);
-  background:#e9f3ec;
+  background:var(--marca-tenue);
   color:var(--marca-oscura);
 }
 footer {
@@ -533,36 +538,34 @@ button:disabled {
   }
 }
 
-/* Kiosco Azul: estados de stock y etiquetas */
-.alerta {
-  color:#9a4b00;
-  font-weight:650;
+/* Casilleros: tamaño normal y al lado de su texto */
+input[type="checkbox"],
+input[type="radio"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  min-height: 0;
+  padding: 0;
+  margin: 0 0.5rem 0 0;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
-.etiqueta {
-  display:inline-block;
-  padding:1px 8px;
-  border-radius:20px;
-  background:#eef0f5;
-  color:var(--suave);
-  font-size:12px;
-  font-weight:600;
+
+.busqueda label:has(input[type="checkbox"]),
+.campo label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
-.opcion {
-  display:inline-flex !important;
-  align-items:center;
-  gap:6px;
-  margin:10px 18px 0 0;
-  font-weight:500 !important;
+
+/* Aire arriba de las tarjetas de los gráficos */
+.card {
+  margin-top: 1.5rem;
 }
-.opcion input {
-  width:auto !important;
-  min-height:0 !important;
+/* Separación entre el buscador y las opciones, y entre las opciones */
+.busqueda label:has(input[type="checkbox"]) {
+  margin: 14px 0 0;
 }
-.busqueda select {
-  width:auto;
-  max-width:220px;
-}
-.sello {
-  font-size:17px !important;
-  letter-spacing:-.5px;
+
+.busqueda label:has(input[type="checkbox"]) + label:has(input[type="checkbox"]) {
+  margin-top: 10px;
 }
