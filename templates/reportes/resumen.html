@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load reportes_extras %}
+
+{% block title %}
+Reportes
+{% endblock %}
+
+{% block content %}
+
+<p class="antetitulo">Solo la Dueña</p>
+<div class="encabezado">
+<div>
+<h1>Reportes</h1>
+<p>
+{% if reporte %}
+Del {{ reporte.desde|date:'d/m/Y' }} al {{ reporte.hasta|date:'d/m/Y' }}.
+{% else %}
+Elegí el tipo de reporte y el período.
+{% endif %}
+</p>
+</div>
+{% if exportar %}
+<div class="exportar">
+<a class="boton secundario" href="{{ exportar.xlsx }}">Descargar Excel</a>
+<a class="boton secundario" href="{{ exportar.pdf }}">Descargar PDF</a>
+</div>
+{% endif %}
+</div>
+
+<nav class="pestanas" aria-label="Tipo de reporte">
+{% for p in pestanas %}
+<a href="{{ p.url }}"{% if p.activa %} aria-current="page"{% endif %}>{{ p.nombre }}</a>
+{% endfor %}
+</nav>
+
+<form class="filtros panel" method="get" action="{% url 'reportes:resumen' %}">
+<input type="hidden" name="tipo" value="{{ form.tipo.value }}">
+<div class="campo">
+<label for="{{ form.periodo.id_for_label }}">{{ form.periodo.label }}</label>
+{{ form.periodo }}
+</div>
+<div class="campo">
+<label for="{{ form.desde.id_for_label }}">{{ form.desde.label }}</label>
+{{ form.desde }}
+</div>
+<div class="campo">
+<label for="{{ form.hasta.id_for_label }}">{{ form.hasta.label }}</label>
+{{ form.hasta }}
+</div>
+{% if 'categoria' in filtros_visibles %}
+<div class="campo">
+<label for="{{ form.categoria.id_for_label }}">{{ form.categoria.label }}</label>
+{{ form.categoria }}
+</div>
+{% endif %}
+{% if 'medio_pago' in filtros_visibles %}
+<div class="campo">
+<label for="{{ form.medio_pago.id_for_label }}">{{ form.medio_pago.label }}</label>
+{{ form.medio_pago }}
+</div>
+{% endif %}
+{% if 'producto' in filtros_visibles %}
+<div class="campo">
+<label for="{{ form.producto.id_for_label }}">{{ form.producto.label }}</label>
+{{ form.producto }}
+</div>
+{% endif %}
+<div class="campo">
+<button type="submit">Ver reporte</button>
+</div>
+</form>
+
+{% if form.errors %}
+<div class="aviso error" role="alert">
+{% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+{% for campo in form %}{% for error in campo.errors %}<p>{{ campo.label }}: {{ error }}</p>{% endfor %}{% endfor %}
+</div>
+{% endif %}
+
+{% if reporte and reporte.vacio %}
+<div class="vacio">
+<h2>Sin datos</h2>
+<p>No hay registros de {{ reporte.titulo|lower }} en este período. Probá con otro rango de fechas.</p>
+</div>
+{% elif reporte %}
+
+<section class="kpis" aria-label="Resumen del período">
+{% for kpi in reporte.kpis %}
+<div class="kpi">
+<span>{{ kpi.titulo }}</span>
+<strong>{{ kpi.celda|formato }}</strong>
+<small>{% if kpi.tendencia == 'sube' %}▲ {% elif kpi.tendencia == 'baja' %}▼ {% endif %}{{ kpi.nota }}</small>
+</div>
+{% endfor %}
+</section>
+
+{% if reporte.graficos %}
+<section class="graficos" aria-label="Gráficos">
+{% for g in reporte.graficos %}
+<div class="card">
+<div class="card-header"><h3 class="card-title">{{ g.titulo }}</h3></div>
+<div class="card-body">
+<div class="position-relative" style="height: 300px">
+<canvas id="grafico-{{ forloop.counter0 }}" role="img" aria-label="{{ g.titulo }}. {{ g.descripcion }} Los números están en las tablas de abajo."></canvas>
+</div>
+</div>
+</div>
+{% endfor %}
+</section>
+{% endif %}
+
+{% for t in reporte.tablas %}
+{% if t.filas %}
+<section class="reporte-tabla">
+<div class="encabezado"><h2>{{ t.titulo }}</h2></div>
+<div class="tabla-scroll">
+<table>
+<caption>{{ t.titulo }}{% if t.nota %}. {{ t.nota }}{% endif %}</caption>
+<thead>
+<tr>
+{% for c in t.columnas %}<th scope="col"{% if c.tipo == 'pesos' or c.tipo == 'cantidad' or c.tipo == 'entero' or c.tipo == 'porcentaje' %} class="num"{% endif %}>{{ c.nombre }}</th>{% endfor %}
+</tr>
+</thead>
+<tbody>
+{% for fila in t.filas %}
+<tr>
+{% for celda in fila %}<td class="{{ celda|clase }}">{{ celda|formato }}</td>{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</section>
+{% endif %}
+{% endfor %}
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if reporte and not reporte.vacio and reporte.graficos %}
+{{ reporte.graficos|json_script:"datos-graficos" }}
+{% endif %}
+<script>
+(() => {
+  const periodo = document.getElementById('{{ form.periodo.id_for_label }}');
+  const fechas = [document.getElementById('{{ form.desde.id_for_label }}'), document.getElementById('{{ form.hasta.id_for_label }}')];
+  const alternar = () => fechas.forEach((campo) => { campo.disabled = periodo.value !== 'rango'; });
+  periodo.addEventListener('change', alternar);
+  alternar();
+
+  const crudo = document.getElementById('datos-graficos');
+  if (!crudo || !globalThis.Chart) {
+    return;
+  }
+  const { cssVar, alpha, areaFill } = globalThis.lteChartTheme;
+  const marca = cssVar('--marca');
+  const suave = cssVar('--suave');
+  const tonos = [1, 0.75, 0.55, 0.4, 0.28, 0.18];
+  const numero = (v, dec) => Number(v).toLocaleString('es-AR', { maximumFractionDigits: dec });
+  const formatear = (formato, v) => (formato === 'pesos' ? '$ ' + numero(v, 0) : numero(v, 3));
+
+  JSON.parse(crudo.textContent).forEach((g, i) => {
+    const lienzo = document.getElementById('grafico-' + i);
+    const horizontal = g.tipo === 'barras-h';
+    const dona = g.tipo === 'dona';
+    const linea = g.tipo === 'linea';
+
+    const datasets = g.series.map((s, j) => {
+      const color = j === 0 ? marca : suave;
+      if (dona) {
+        return { label: s.nombre, data: s.datos, backgroundColor: s.datos.map((_, k) => alpha(marca, tonos[k % tonos.length])) };
+      }
+      if (linea) {
+        return {
+          label: s.nombre, data: s.datos, borderColor: color, tension: 0.3,
+          borderDash: s.punteada ? [6, 5] : [],
+          borderWidth: s.punteada ? 2 : 3,
+          pointRadius: s.punteada ? 0 : 3,
+          pointBackgroundColor: color,
+          fill: !s.punteada,
+          backgroundColor: s.punteada ? 'transparent' : areaFill(color, 0.25, 0),
+        };
+      }
+      return { label: s.nombre, data: s.datos, backgroundColor: color };
+    });
+
+    const opciones = {
+      indexAxis: horizontal ? 'y' : 'x',
+      plugins: {
+        legend: { display: g.series.length > 1 || dona },
+        tooltip: { callbacks: { label: (item) => item.dataset.label + ': ' + formatear(g.formato, dona ? item.parsed : (horizontal ? item.parsed.x : item.parsed.y)) } },
+      },
+    };
+    if (!dona) {
+      const valores = { beginAtZero: true, ticks: { callback: (v) => formatear(g.formato, v) } };
+      opciones.scales = horizontal ? { x: valores, y: { grid: { display: false } } } : { y: valores };
+    }
+    new Chart(lienzo, { type: dona ? 'doughnut' : (linea ? 'line' : 'bar'), data: { labels: g.etiquetas, datasets }, options: opciones });
+  });
+})();
+</script>
+{% endblock %}

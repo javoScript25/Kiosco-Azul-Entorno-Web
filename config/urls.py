@@ -6,6 +6,7 @@ urlpatterns = [
     path("api/", include("api.urls")),
     path("cuentas/", include("cuentas.urls")),
     path("catalogo/", include("catalogo.urls")),
+    path("reportes/", include("reportes.urls")),
     path("", include("inicio.urls")),
 ]
 admin.site.site_header = "Kiosco Azul · Tablas del sistema"

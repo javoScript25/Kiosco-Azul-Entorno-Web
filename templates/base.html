@@ -47,6 +47,11 @@ aria-current="page"
 >Productos y stock</a>
 
 {% if user.es_administrador %}
+<a href="{% url 'reportes:resumen' %}"
+{% if request.resolver_match.app_name == 'reportes' %}
+aria-current="page"
+{% endif %}
+>Reportes</a>
 <a href="{% url 'cuentas:usuarios' %}"
 {% if request.resolver_match.app_name == 'cuentas' %}
 aria-current="page"
